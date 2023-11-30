@@ -8,8 +8,6 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from common.cancer_types import CancerType, get_cancer_type
-
 
 class AccountType(StrEnum):
     PATIENT = "patient"
@@ -80,26 +78,41 @@ class LogResponse(BaseModel):
         )
 
 
+class FormFieldType(StrEnum):
+    TEXT = "text"
+    NUMBER = "number"
+    DATETIME = "datetime"
+
+
+class FormField(BaseModel):
+    name: str
+    description: str
+    type: FormFieldType
+
+
 class Form(models.Model):
     id = fields.IntField(pk=True)
+    name = fields.TextField()
     fields = fields.JSONField()
 
 
 class FormResponse(BaseModel):
     id: int
-    fields: dict
+    name: str
+    fields: list[FormField]
 
     @classmethod
     async def create(cls, form: Form):
         return cls(
             id=form.id,
+            name=form.name,
             fields=form.fields,
         )
     
 
 class Document(models.Model):
     id = fields.IntField(pk=True)
-    account = fields.ForeignKeyField("models.Account")
+    patient = fields.ForeignKeyField("models.Account")
     form = fields.ForeignKeyField("models.Form")
     timestamp = fields.DatetimeField(auto_now_add=True)
 
@@ -109,17 +122,22 @@ class Document(models.Model):
 
 class DocumentResponse(BaseModel):
     id: int
-    account: AccountResponse
-    form: FormResponse
+    patient_id: int
+    form_id: int
     timestamp: datetime.datetime
     data: dict
 
     @classmethod
-    async def create(cls, document: Document, data: dict = {}):
+    async def create(cls, document: Document, include_data: bool = False):
+        if include_data:
+            data = document.get_data()
+        else:
+            data = {}
+
         return cls(
             id=document.id,
-            account=await AccountResponse.create(document.account),
-            form=await FormResponse.create(document.form),
+            patient_id=document.patient_id,
+            form_id=document.form_id,
             timestamp=document.timestamp,
             data=data,
         )
