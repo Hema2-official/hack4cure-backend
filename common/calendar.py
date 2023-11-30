@@ -17,7 +17,7 @@ class Day(BaseModel):
     month_number: int
     day_number: int
     weekday: int
-    machines: list["Event"] = []
+    events: list["Event"] = []
 
 
 class Event(BaseModel):
@@ -35,13 +35,12 @@ async def get_calendar():
     # get current month, day, weekday
     now = datetime.datetime.now() - datetime.timedelta(days=29)
 
-    documents = await Document.all().prefetch_related("patient")
+    documents = await Document.all()
     
     while len(calendar.days) < 30:
         weekday = now.weekday()
 
         day = Day(month_number=now.month, day_number=now.day, weekday=weekday)
-        calendar.days.append(day)
 
         for document in documents:
             if document.timestamp.month == now.month and document.timestamp.day == now.day:
@@ -50,10 +49,12 @@ async def get_calendar():
                     start_minute=document.timestamp.minute,
                     duration=30,
                     document_id=document.id,
-                    display_name=document.patient.last_name,
+                    display_name=document.patient.last_name if document.patient.last_name else "",
                     color="#028090",
                 )
-                day.machines.append(event)
+                day.events.append(event)
+
+        calendar.days.append(day)
 
         # increment day
         now += datetime.timedelta(days=1)

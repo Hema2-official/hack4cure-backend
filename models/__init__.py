@@ -115,9 +115,13 @@ class Document(models.Model):
     patient = fields.ForeignKeyField("models.Account")
     form = fields.ForeignKeyField("models.Form")
     timestamp = fields.DatetimeField(auto_now_add=True)
+    pdf = fields.BinaryField(null=True)
+    data = fields.JSONField(null=True)
 
     def get_data(self) -> dict:
-        return {}
+        if self.data is None:
+            return {}
+        return self.data
 
 
 class DocumentResponse(BaseModel):
@@ -141,14 +145,3 @@ class DocumentResponse(BaseModel):
             timestamp=document.timestamp,
             data=data,
         )
-    
-
-class PDF(Document):
-    file = fields.BinaryField()
-
-
-class FormSubmission(Document):
-    data = fields.JSONField()
-
-    def get_data(self) -> dict:
-        return self.data
