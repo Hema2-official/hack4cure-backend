@@ -30,9 +30,6 @@ class Account(models.Model):
     updated_at = fields.IntField() # unix timestamp
 
     type = fields.CharEnumField(AccountType, default=AccountType.STAFF)
-    
-    class Meta:
-        table = "accounts"
 
     async def update(self):
         self.updated_at = int(time.time())
@@ -67,9 +64,6 @@ class Log(models.Model):
     id = fields.IntField(pk=True)
     timestamp = fields.DatetimeField(auto_now_add=True)
     text = fields.TextField() # The log itself
-    
-    class Meta:
-        table = "logs"
 
 
 class LogResponse(BaseModel):
@@ -108,10 +102,6 @@ class Document(models.Model):
     account = fields.ForeignKeyField("models.Account")
     form = fields.ForeignKeyField("models.Form")
     timestamp = fields.DatetimeField(auto_now_add=True)
-    file_path = fields.TextField()
-
-    class Meta:
-        table = "documents"
 
     def get_data(self) -> dict:
         return {}
@@ -122,7 +112,6 @@ class DocumentResponse(BaseModel):
     account: AccountResponse
     form: FormResponse
     timestamp: datetime.datetime
-    file_path: str
     data: dict
 
     @classmethod
@@ -132,7 +121,6 @@ class DocumentResponse(BaseModel):
             account=await AccountResponse.create(document.account),
             form=await FormResponse.create(document.form),
             timestamp=document.timestamp,
-            file_path=document.file_path,
             data=data,
         )
     
@@ -140,15 +128,9 @@ class DocumentResponse(BaseModel):
 class PDF(Document):
     file = fields.BinaryField()
 
-    class Meta:
-        table = "pdfs"
-
 
 class FormSubmission(Document):
     data = fields.JSONField()
-
-    class Meta:
-        table = "form_submissions"
 
     def get_data(self) -> dict:
         return self.data
