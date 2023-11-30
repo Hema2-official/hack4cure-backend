@@ -47,8 +47,6 @@ db_config: dict = {
     }
 }
 
-print(db_config)
-
 register_tortoise(
     app=app,
     config=db_config,
