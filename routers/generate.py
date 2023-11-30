@@ -12,7 +12,6 @@ from routers.auth import _register
 
 import random
 import json
-import random
 
 with open("common/names.json") as f:
     names = json.load(f)
