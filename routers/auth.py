@@ -207,7 +207,7 @@ async def google_callback(
     if config.BRANCH is None:
         response = RedirectResponse(config.PREFIX + "/docs")
     else:
-        response = RedirectResponse("https://junctionx-2023-frontend.vercel.app/")
+        response = RedirectResponse("https://hack4cure-2023-frontend.vercel.app/")
     
     _login(response, account)
     await log(f"Account {str(account.id)} logged in.")
@@ -219,7 +219,7 @@ async def google_callback(
 async def logout(response: Response):
     try:
         response = RedirectResponse(
-            'https://junctionx-2023-frontend.vercel.app/login', 
+            'https://hack4cure-2023-frontend.vercel.app/login', 
             status_code=302
         )
         response.delete_cookie(

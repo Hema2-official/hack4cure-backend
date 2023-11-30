@@ -22,12 +22,12 @@ print(branches)
 
 os.system("git submodule update --init --recursive")
 
-os.system(f"docker stop junctionx_{new}")
-os.system(f"docker rm junctionx_{new}")
+os.system(f"docker stop hack4cure_{new}")
+os.system(f"docker rm hack4cure_{new}")
 
-os.system("cp /usr/local/share/junctionx/.env .")
-os.system(f"docker build -t junctionx .")
-os.system("docker run -d -p %s:7000 --name junctionx_%s -e BRANCH=%s junctionx" 
+os.system("cp /usr/local/share/hack4cure/.env .")
+os.system(f"docker build -t hack4cure .")
+os.system("docker run -d -p %s:7000 --name hack4cure_%s -e BRANCH=%s hack4cure" 
 % (
     new_port, 
     new,
@@ -40,8 +40,8 @@ for branch in branches:
     port = get_port(branch)
 
     config += ("""
-        location ~ ^/junctionx/%s/api/(.*)$ {
-            rewrite ^/junctionx/%s/api/(.*) /$1 break;
+        location ~ ^/hack4cure/%s/api/(.*)$ {
+            rewrite ^/hack4cure/%s/api/(.*) /$1 break;
             proxy_pass http://127.0.0.1:%s;
         }
     """ % (branch, branch, port))
