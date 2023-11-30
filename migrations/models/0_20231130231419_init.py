@@ -23,22 +23,21 @@ CREATE TABLE IF NOT EXISTS "account" (
 COMMENT ON COLUMN "account"."type" IS 'PATIENT: patient\nSTAFF: staff';
 CREATE TABLE IF NOT EXISTS "form" (
     "id" SERIAL NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
     "fields" JSONB NOT NULL
 );
 CREATE TABLE IF NOT EXISTS "document" (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "timestamp" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
-    "file_path" TEXT NOT NULL,
-    "account_id" INT NOT NULL REFERENCES "account" ("id") ON DELETE CASCADE,
-    "form_id" INT NOT NULL REFERENCES "form" ("id") ON DELETE CASCADE
+    "form_id" INT NOT NULL REFERENCES "form" ("id") ON DELETE CASCADE,
+    "patient_id" INT NOT NULL REFERENCES "account" ("id") ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS "formsubmission" (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "timestamp" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
-    "file_path" TEXT NOT NULL,
     "data" JSONB NOT NULL,
-    "account_id" INT NOT NULL REFERENCES "account" ("id") ON DELETE CASCADE,
-    "form_id" INT NOT NULL REFERENCES "form" ("id") ON DELETE CASCADE
+    "form_id" INT NOT NULL REFERENCES "form" ("id") ON DELETE CASCADE,
+    "patient_id" INT NOT NULL REFERENCES "account" ("id") ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS "log" (
     "id" SERIAL NOT NULL PRIMARY KEY,
@@ -48,10 +47,9 @@ CREATE TABLE IF NOT EXISTS "log" (
 CREATE TABLE IF NOT EXISTS "pdf" (
     "id" SERIAL NOT NULL PRIMARY KEY,
     "timestamp" TIMESTAMPTZ NOT NULL  DEFAULT CURRENT_TIMESTAMP,
-    "file_path" TEXT NOT NULL,
     "file" BYTEA NOT NULL,
-    "account_id" INT NOT NULL REFERENCES "account" ("id") ON DELETE CASCADE,
-    "form_id" INT NOT NULL REFERENCES "form" ("id") ON DELETE CASCADE
+    "form_id" INT NOT NULL REFERENCES "form" ("id") ON DELETE CASCADE,
+    "patient_id" INT NOT NULL REFERENCES "account" ("id") ON DELETE CASCADE
 );"""
 
 

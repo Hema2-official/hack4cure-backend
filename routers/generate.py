@@ -1,4 +1,3 @@
-import time
 from fastapi import APIRouter, HTTPException, status, Depends, Response
 
 from models import *
