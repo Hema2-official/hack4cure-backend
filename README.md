@@ -6,6 +6,12 @@ https://hack4cure.vercel.app/
 
 ## Local development
 
+Fetch the git submodules:
+
+```
+git submodule update --init --recursive
+```
+
 Build container:
 
 ```
