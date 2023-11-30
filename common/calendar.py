@@ -49,7 +49,7 @@ async def get_calendar():
                     start_minute=document.timestamp.minute,
                     duration=30,
                     document_id=document.id,
-                    display_name=document.patient.last_name if document.patient.last_name else "",
+                    display_name=(await document.patient).last_name,
                     color="#028090",
                 )
                 day.events.append(event)
