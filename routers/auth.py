@@ -5,7 +5,7 @@ import httpx
 from jose import jwt
 
 import common.config as config
-from models import Account, Gender
+from models import Account
 from common.auth import create_token, verify_password, hash_password, check_email
 from common.logger import log
 
@@ -80,7 +80,6 @@ async def _register(
     email: str = None,
     password: str = None,
     google_id: str = None,
-    gender: Gender = None,
 ):
     account = Account()
 
@@ -102,7 +101,6 @@ async def _register(
     account.updated_at = int(time.time())
     account.first_name = first_name
     account.last_name = last_name
-    account.gender = gender
     await account.save()
     await log(f"Account {str(account.id)} ({account.first_name} {account.last_name}) registered.")
 
@@ -114,7 +112,6 @@ class RegisterBody(BaseModel):
     password: str
     first_name: str
     last_name: str
-    gender: Optional[Gender]
 
 
 @router.post("/register")
@@ -126,7 +123,6 @@ async def register(
         password=body.password,
         first_name=body.first_name,
         last_name=body.last_name,
-        gender=body.gender,
     )
 
     return AuthResponse(account_id=account.id)

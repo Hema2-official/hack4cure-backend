@@ -1,12 +1,7 @@
 from fastapi import APIRouter, Response, Request, HTTPException, status, Depends
 
 from models import *
-from common.calendar import get_calendar
 from dependencies.auth import *
-
-from build.utils import Machine, schedule
-from build.utils import Appointment as AppointmentBind
-from build.utils import Demand as DemandBind
 
 from typing import Annotated
 
@@ -15,9 +10,9 @@ router = APIRouter(tags=["debug"])
 
 # here should go wrappers of common functions that should be tested
 
-@router.get("/calendar")
+"""@router.get("/calendar")
 async def calendar():
-    return await get_calendar()
+    return await get_calendar()"""
 
 
 @router.post("/truncate-patients")
@@ -27,11 +22,11 @@ async def truncate_patients(
     await Account.filter(type=AccountType.PATIENT).delete()
 
 
-@router.post("/truncate-appointments")
+"""@router.post("/truncate-appointments")
 async def truncate_appointments(
     token: Annotated[Token, Depends(require_staff_token)],
 ):
-    await Appointment.all().delete()
+    await Appointment.all().delete()"""
 
 """
 @router.get("/schedule")
