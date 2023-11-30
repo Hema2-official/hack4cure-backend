@@ -1,8 +1,8 @@
-# hack4cure Budapest 2023 - Backend
+# Hack4Cure - Backend
 
 The backend repository of our project, see the bottom of the page for the frontend. You can try our dashboard without installing through this link:
 
-https://hack4cure-2023-frontend.vercel.app/
+https://hack4cure.vercel.app/
 
 ## Local development
 
@@ -36,4 +36,4 @@ Check out the Swagger UI Docs on https://dene.sh/hack4cure/master/api/docs.
 
 ## Frontend repository
 
-https://github.com/ZsombiTech/hack4cure-2023-frontend
+https://github.com/ZsombiTech/hack4cure-frontend
