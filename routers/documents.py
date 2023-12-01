@@ -22,7 +22,7 @@ async def get_documents(
         documents = await Document.filter(patient_id=patient_id)
 
     return [
-        await DocumentResponse.create(document, include_data=False)
+        await DocumentResponse.create(document, include_data=True)
         for document in documents
     ]
 
