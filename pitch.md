@@ -17,7 +17,7 @@ Az EESZT újraalapozása strukturált adatokra viszont az eredeti problémánkon
 
 Lehetővé tenné az adatok logikai validációját, ami nagyon egyszerű automatikus ellenőrzéseket hajthatna végre például arra, hogy nőnek ne lehessen prosztatarákja a rendszerben.
 
-A halálos betegségek diagnosztikájában is előrelépést tudnánk elérni. Dani trainelt egy AI modellt a számunkra a szervezők által biztosított egészen limitált OMOP adatbázis alapján, ami 5 rizikófaktort és az 50 éves kor előtti elhalálozásokat veszi figyelembe, és a kimenete korrelál azzal, hogy érdemes lenne-e egy embert szűrővizsgálatokra beutalni, és ehhez pusztán a strukturált adatokra van szükség.
+A halálos betegségek diagnosztikájában is előrelépést tudnánk elérni. Dani trainelt egy AI modellt a számunkra a szervezők által biztosított limitált adatmennyiségű OMOP adatbázis alapján, ami 5 rizikófaktort és az 50 éves kor előtti elhalálozásokat veszi figyelembe, és a kimenete korrelál azzal, hogy érdemes lenne-e egy embert szűrővizsgálatokra beutalni, és ehhez pusztán a strukturált adatokra van szükség.
 
 Ezen ötletek bármelyikére egy demonstrációt pár nap alatt létre lehet hozni.
 
