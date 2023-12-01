@@ -122,6 +122,29 @@ class Document(models.Model):
         if self.data is None:
             return {}
         return self.data
+    
+    async def validate(self) -> bool:
+        for field in (await self.form).fields:
+            if field["name"] not in self.data:
+                return False
+            
+            if field["type"] == FormFieldType.NUMBER:
+                try:
+                    float(self.data[field.name])
+                except ValueError:
+                    return False
+                
+            if field["type"] == FormFieldType.DATETIME:
+                try:
+                    datetime.datetime.fromisoformat(self.data[field.name])
+                except ValueError:
+                    return False
+                
+            if field["type"] == FormFieldType.TEXT:
+                if not isinstance(self.data[field["name"]], str):
+                    return False
+
+        return True
 
 
 class DocumentResponse(BaseModel):
@@ -129,14 +152,14 @@ class DocumentResponse(BaseModel):
     patient_id: int
     form_id: int
     timestamp: datetime.datetime
-    data: dict
+    data: Optional[dict]
 
     @classmethod
     async def create(cls, document: Document, include_data: bool = False):
         if include_data:
             data = document.get_data()
         else:
-            data = {}
+            data = None
 
         return cls(
             id=document.id,
