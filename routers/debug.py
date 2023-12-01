@@ -2,7 +2,7 @@ from fastapi import APIRouter, Response, Request, HTTPException, status, Depends
 
 from models import *
 from dependencies.auth import *
-from common.pdf import pdf_to_parts
+from common.pdf import pdf_to_parts, parts_to_raw
 
 from typing import Annotated
 
@@ -34,8 +34,8 @@ async def interpret_pdf(
 
     if document.pdf is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-
-    return pdf_to_parts(document.pdf)
+    
+    return parts_to_raw(pdf_to_parts(document.pdf))
 
 
 """@router.post("/truncate-appointments")
