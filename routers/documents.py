@@ -53,12 +53,44 @@ async def upload_form (
         data=body.data,
     )
 
+    if body.data is not None and not await document.validate():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Data format does not match the form.",
+        )
+
     await document.save()
-    return await DocumentResponse.create(document)
+    return await DocumentResponse.create(document, include_data=True)
+
+
+class FormSubmissionPatchBody(BaseModel):
+    timestamp: Optional[datetime.datetime]
+    data: Optional[dict]
+
+
+@router.patch("/{id}")
+async def patch_form(
+    id: int,
+    body: FormSubmissionPatchBody,
+    token: Token = Depends(require_staff_token),
+):
+    document = await Document.get_or_none(id=id)
+    if document is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    document.update_from_dict(body.dict(exclude_unset=True))
+
+    if body.data is not None and not await document.validate():
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Data format does not match the form.",
+        )
+
+    await document.save()
 
 
 @router.post("/{id}/pdf")
-async def upload_pdf (
+async def upload_pdf(
     id: int,
     file: UploadFile = File(...),
     token: Token = Depends(require_staff_token),
@@ -103,3 +135,12 @@ async def get_document_pdf(
         media_type="application/octet-stream", 
         headers={"Content-Disposition": f"attachment; filename=document-{document.id}.pdf"}
     )
+
+
+@router.get("/autocomplete")
+async def autocomplete_documents(
+    patient_id: int,
+    form_id: int,
+    token: Token = Depends(require_staff_token),
+):
+    return {}
