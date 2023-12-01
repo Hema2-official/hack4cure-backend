@@ -117,8 +117,9 @@ class Document(models.Model):
     timestamp = fields.DatetimeField(auto_now_add=True)
     pdf = fields.BinaryField(null=True)
     data = fields.JSONField(null=True)
+    raw = fields.JSONField(null=True, default=None)
 
-    def get_data(self) -> dict:
+    async def get_data(self) -> dict:
         if self.data is None:
             return {}
         return self.data
@@ -127,6 +128,9 @@ class Document(models.Model):
         for field in (await self.form).fields:
             if field["name"] not in self.data:
                 return False
+            
+            if self.data[field["name"]] is None:
+                continue
             
             if field["type"] == FormFieldType.NUMBER:
                 try:
@@ -153,11 +157,12 @@ class DocumentResponse(BaseModel):
     form_id: int
     timestamp: datetime.datetime
     data: Optional[dict]
+    raw: Optional[dict]
 
     @classmethod
     async def create(cls, document: Document, include_data: bool = False):
         if include_data:
-            data = document.get_data()
+            data = await document.get_data()
         else:
             data = None
 
@@ -167,4 +172,5 @@ class DocumentResponse(BaseModel):
             form_id=document.form_id,
             timestamp=document.timestamp,
             data=data,
+            raw=document.raw,
         )
