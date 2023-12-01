@@ -139,7 +139,7 @@ class Document(models.Model):
             
             if field["type"] == FormFieldType.NUMBER:
                 try:
-                    float(self.data[field.name])
+                    float(self.data[field["name"]])
                 except ValueError:
                     return False
                 
