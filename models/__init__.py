@@ -1,4 +1,5 @@
 from tortoise import fields, models
+from common.pdf import pdf_to_parts, parts_to_raw
 from fastapi import HTTPException, status
 
 from enum import Enum, StrEnum
@@ -121,7 +122,11 @@ class Document(models.Model):
 
     async def get_data(self) -> dict:
         if self.data is None:
-            return {}
+            if self.pdf is None:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+            self.raw = parts_to_raw(pdf_to_parts(self.pdf))
+            
+            await self.save()
         return self.data
     
     async def validate(self) -> bool:
@@ -134,7 +139,7 @@ class Document(models.Model):
             
             if field["type"] == FormFieldType.NUMBER:
                 try:
-                    float(self.data[field.name])
+                    float(self.data[field["name"]])
                 except ValueError:
                     return False
                 

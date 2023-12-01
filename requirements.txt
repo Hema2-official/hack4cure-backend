@@ -9,3 +9,8 @@ passlib[argon2]==1.7.4
 httpx==0.25.0
 aerich==0.7.2
 numpy==1.26.0
+ghostscript==0.7
+opencv-python==4.8.1.78
+camelot-py==0.11.0
+PyPDF==3.17.1
+openai==1.3.6

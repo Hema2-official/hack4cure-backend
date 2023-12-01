@@ -10,6 +10,7 @@ WORKDIR /app
 
 COPY . .
 
+RUN apt-get update && apt-get install ghostscript python3-tk ffmpeg libsm6 libxext6 -y
 RUN pip install -r requirements.txt --no-cache-dir
 
 CMD [ "uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7000", "--reload" ]

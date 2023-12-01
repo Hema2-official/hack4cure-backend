@@ -22,7 +22,7 @@ async def get_documents(
         documents = await Document.filter(patient_id=patient_id)
 
     return [
-        await DocumentResponse.create(document, include_data=False)
+        await DocumentResponse.create(document, include_data=True)
         for document in documents
     ]
 
@@ -61,6 +61,28 @@ async def upload_form (
 
     await document.save()
     return await DocumentResponse.create(document, include_data=True)
+
+
+@router.get("/autocomplete")
+async def autocomplete_documents(
+    patient_id: int,
+    form_id: int,
+    token: Token = Depends(require_staff_token),
+):
+    form = await Form.get_or_none(id=form_id)
+    if form is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    
+    data = {}
+    for field in form.fields:
+        if field["type"] == FormFieldType.NUMBER:
+            data[field["name"]] = 0
+        elif field["type"] == FormFieldType.DATETIME:
+            data[field["name"]] = datetime.datetime.now().isoformat()
+        elif field["type"] == FormFieldType.TEXT:
+            data[field["name"]] = ""
+
+    return data
 
 
 class FormSubmissionPatchBody(BaseModel):
@@ -135,12 +157,3 @@ async def get_document_pdf(
         media_type="application/octet-stream", 
         headers={"Content-Disposition": f"attachment; filename=document-{document.id}.pdf"}
     )
-
-
-@router.get("/autocomplete")
-async def autocomplete_documents(
-    patient_id: int,
-    form_id: int,
-    token: Token = Depends(require_staff_token),
-):
-    return {}

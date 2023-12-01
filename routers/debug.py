@@ -2,6 +2,7 @@ from fastapi import APIRouter, Response, Request, HTTPException, status, Depends
 
 from models import *
 from dependencies.auth import *
+from common.pdf import pdf_to_parts, parts_to_raw
 
 from typing import Annotated
 
@@ -20,6 +21,21 @@ async def truncate_patients(
     token: Annotated[Token, Depends(require_staff_token)],
 ):
     await Account.filter(type=AccountType.PATIENT).delete()
+
+
+@router.get("/{id}/to_parts")
+async def interpret_pdf(
+    id: int,
+    token: Token = Depends(require_staff_token),
+):
+    document = await Document.get_or_none(id=id)
+    if document is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+
+    if document.pdf is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    
+    return parts_to_raw(pdf_to_parts(document.pdf))
 
 
 """@router.post("/truncate-appointments")
